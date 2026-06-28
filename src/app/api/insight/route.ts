@@ -2,8 +2,6 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import type { TrineResult } from "@/lib/compute";
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
