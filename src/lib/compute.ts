@@ -1,19 +1,30 @@
 import { QUESTIONS } from "./questions";
 
-export type Answers = Record<string, "A" | "B">;
+// MBTI questions are answered on a 4-point strength scale ("A2" = strongly
+// A, "A1" = somewhat A, "B1" = somewhat B, "B2" = strongly B) so a response
+// can carry conviction, not just direction. Astrology/numerology questions
+// stay simple A/B picks.
+export type AnswerValue = "A" | "B" | "A1" | "A2" | "B1" | "B2";
+export type Answers = Record<string, AnswerValue>;
+
+const STRENGTH_WEIGHT: Record<string, number> = { A2: 2, A1: 1, B1: -1, B2: -2, A: 1, B: -1 };
 
 // ── MBTI ─────────────────────────────────────────────────────────────────────
 function scoreDimension(answers: Answers, dim: string, aLetter: string, bLetter: string): [string, number] {
   const qs = QUESTIONS.filter(q => q.dimension === dim);
-  let aCount = 0, bCount = 0;
+  let weightSum = 0, aVotes = 0, bVotes = 0;
   for (const q of qs) {
-    const ans = answers[q.id];
-    if (ans === "A") aCount++;
-    else if (ans === "B") bCount++;
+    const w = STRENGTH_WEIGHT[answers[q.id]] ?? 0;
+    weightSum += w;
+    if (w > 0) aVotes++;
+    else if (w < 0) bVotes++;
   }
-  const total = aCount + bCount || 1;
-  const aWins = aCount >= bCount;
-  const pct = Math.round((Math.max(aCount, bCount) / total) * 100);
+  // An odd question count per axis means a raw-vote tie is impossible, so
+  // this fallback always resolves the rare case where strength cancels out
+  // exactly — without defaulting every tie toward the same letter.
+  const aWins = weightSum !== 0 ? weightSum > 0 : aVotes > bVotes;
+  const maxWeight = qs.length * 2 || 1;
+  const pct = Math.round(50 + (Math.abs(weightSum) / maxWeight) * 50);
   return [aWins ? aLetter : bLetter, pct];
 }
 

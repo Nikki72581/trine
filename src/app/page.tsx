@@ -5,7 +5,7 @@ import { TrineHeader } from "@/components/TrineHeader";
 import { Logo } from "@/components/Logo";
 import { ResultsPage } from "@/components/ResultsPage";
 import { QUESTIONS } from "@/lib/questions";
-import { computeAll, type TrineResult, type Answers } from "@/lib/compute";
+import { computeAll, type TrineResult, type Answers, type AnswerValue } from "@/lib/compute";
 
 type Screen = "intro" | "info" | "quiz" | "computing" | "results";
 
@@ -17,6 +17,15 @@ const COMPUTE_LINES = [
   "Drawing convergence points…",
   "Assembling your archetype…",
 ];
+
+// Deterministically varies which statement displays first per question, so
+// the answer that happens to be listed first isn't always the same letter —
+// a real source of bias when every question puts the same side on top.
+function swapOrder(id: string): boolean {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return (h & 1) === 0;
+}
 
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("intro");
@@ -38,7 +47,7 @@ export default function Home() {
     setScreen("quiz");
   }
 
-  function answerQuestion(val: "A" | "B") {
+  function answerQuestion(val: AnswerValue) {
     const q = QUESTIONS[qIndex];
     const updated = { ...answers, [q.id]: val };
     setAnswers(updated);
@@ -97,6 +106,7 @@ export default function Home() {
     screen === "results" ? "YOUR READING" : "";
 
   const q = QUESTIONS[qIndex];
+  const orderedOptions = q && swapOrder(q.id) ? [q.b, q.a] : q ? [q.a, q.b] : [];
   const progressWidth = `${((qIndex + 1) / QUESTIONS.length) * 100}%`;
   const dimLabels: Record<string, string> = {
     EI: "ENERGY", SN: "PERCEPTION", TF: "JUDGMENT", JP: "LIFESTYLE",
@@ -130,7 +140,7 @@ export default function Home() {
             Three systems.<br />One you.
           </h1>
           <p style={{ fontSize: 18, lineHeight: 1.6, color: "#574F47", maxWidth: 520, margin: "0 0 38px" }}>
-            Trine reads your personality through three lenses at once — then shows you where they converge. Answer 20 questions and we&apos;ll map the overlap between your psychology, your cosmos, and your numbers.
+            Trine reads your personality through three lenses at once — then shows you where they converge. Answer {QUESTIONS.length} questions and we&apos;ll map the overlap between your psychology, your cosmos, and your numbers.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 44 }}>
             {[
@@ -164,7 +174,7 @@ export default function Home() {
               Begin your profile <span style={{ fontSize: 18 }}>→</span>
             </button>
             <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, color: "#9A938B", margin: "16px 0 0" }}>
-              ~4 minutes · {QUESTIONS.length} questions · no account needed
+              ~6 minutes · {QUESTIONS.length} questions · no account needed
             </p>
           </div>
         </main>
@@ -284,34 +294,76 @@ export default function Home() {
             {q.prompt}
           </h2>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
-            {[q.a, q.b].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => answerQuestion(opt.value)}
-                style={{
-                  textAlign: "left",
-                  fontFamily: "'Hanken Grotesk', sans-serif",
-                  fontSize: 17, fontWeight: 500, color: "#33302B",
-                  background: "#fff", border: "1px solid #E7E1D9",
-                  borderRadius: 14, padding: "20px 22px",
-                  cursor: "pointer", display: "flex", alignItems: "center", gap: 16,
-                  transition: "border-color .15s, transform .1s",
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9A6FD0"; (e.currentTarget as HTMLElement).style.transform = "translateX(3px)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#E7E1D9"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
-              >
-                <span style={{
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: "#B4ABA1",
-                  border: "1px solid #E7E1D9", borderRadius: 7, width: 30, height: 30,
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                }}>
-                  {opt.value}
-                </span>
-                {opt.text}
-              </button>
-            ))}
-          </div>
+          {q.system === "mbti" ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
+              {orderedOptions.map((opt) => (
+                <div
+                  key={opt.value}
+                  style={{
+                    background: "#fff", border: "1px solid #E7E1D9",
+                    borderRadius: 14, padding: "18px 20px 16px",
+                  }}
+                >
+                  <p style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: 17, fontWeight: 500, color: "#33302B",
+                    lineHeight: 1.4, margin: "0 0 14px",
+                  }}>
+                    {opt.text}
+                  </p>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {([["1", "Somewhat"], ["2", "Strongly"]] as const).map(([strength, label]) => (
+                      <button
+                        key={strength}
+                        onClick={() => answerQuestion(`${opt.value}${strength}` as AnswerValue)}
+                        style={{
+                          flex: 1,
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: 12.5, letterSpacing: "0.06em", color: "#6E665E",
+                          background: "#FAF8F5", border: "1px solid #E7E1D9",
+                          borderRadius: 9, padding: "10px 0",
+                          cursor: "pointer", transition: "border-color .15s, color .15s",
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9A6FD0"; (e.currentTarget as HTMLElement).style.color = "#9A6FD0"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#E7E1D9"; (e.currentTarget as HTMLElement).style.color = "#6E665E"; }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
+              {[q.a, q.b].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => answerQuestion(opt.value)}
+                  style={{
+                    textAlign: "left",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: 17, fontWeight: 500, color: "#33302B",
+                    background: "#fff", border: "1px solid #E7E1D9",
+                    borderRadius: 14, padding: "20px 22px",
+                    cursor: "pointer", display: "flex", alignItems: "center", gap: 16,
+                    transition: "border-color .15s, transform .1s",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9A6FD0"; (e.currentTarget as HTMLElement).style.transform = "translateX(3px)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#E7E1D9"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                >
+                  <span style={{
+                    fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: "#B4ABA1",
+                    border: "1px solid #E7E1D9", borderRadius: 7, width: 30, height: 30,
+                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  }}>
+                    {opt.value}
+                  </span>
+                  {opt.text}
+                </button>
+              ))}
+            </div>
+          )}
 
           <button onClick={goBack} style={{ fontFamily: "Space Grotesk, 'Hanken Grotesk', sans-serif", fontSize: 14, color: "#9A938B", background: "none", border: "none", cursor: "pointer", padding: "8px 0", marginTop: 30, alignSelf: "flex-start" }}>
             ← Back

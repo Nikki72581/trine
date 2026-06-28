@@ -16,8 +16,13 @@ export interface Question {
 
 export const QUESTIONS: Question[] = [
   // ── MBTI ─────────────────────────────────────────────────────────────────
+  // 5 questions per axis, each targeting a distinct facet of the dichotomy
+  // so a single ambiguous answer can't dominate the result.
+
+  // Extraversion / Introversion — recharge, processing style, social
+  // breadth vs. depth, response to unplanned contact, speaking style.
   {
-    id: "q1",
+    id: "ei1",
     dimension: "EI",
     system: "mbti",
     prompt: "After a long weekend full of social events, you typically feel:",
@@ -25,7 +30,7 @@ export const QUESTIONS: Question[] = [
     b: { text: "Drained — I need quiet time to recharge", value: "B" },
   },
   {
-    id: "q2",
+    id: "ei2",
     dimension: "EI",
     system: "mbti",
     prompt: "When working through a difficult problem, you'd rather:",
@@ -33,7 +38,34 @@ export const QUESTIONS: Question[] = [
     b: { text: "Think it through quietly on your own first", value: "B" },
   },
   {
-    id: "q3",
+    id: "ei3",
+    dimension: "EI",
+    system: "mbti",
+    prompt: "At a party full of people you don't know, you're more likely to:",
+    a: { text: "Work the room and meet as many people as you can", value: "A" },
+    b: { text: "Find one or two people and go deeper", value: "B" },
+  },
+  {
+    id: "ei4",
+    dimension: "EI",
+    system: "mbti",
+    prompt: "An unexpected call or someone dropping by unannounced feels:",
+    a: { text: "Welcome — I like the spontaneity", value: "A" },
+    b: { text: "Disruptive — I'd rather it was planned", value: "B" },
+  },
+  {
+    id: "ei5",
+    dimension: "EI",
+    system: "mbti",
+    prompt: "In a group discussion, you tend to:",
+    a: { text: "Share thoughts out loud as they occur to you", value: "A" },
+    b: { text: "Wait until your thoughts are fully formed before speaking", value: "B" },
+  },
+
+  // Sensing / Intuition — concrete vs. abstract, present vs. possibility,
+  // detail recall vs. meaning, established methods vs. experimentation.
+  {
+    id: "sn1",
     dimension: "SN",
     system: "mbti",
     prompt: "When absorbing new information, you trust most:",
@@ -41,7 +73,7 @@ export const QUESTIONS: Question[] = [
     b: { text: "Patterns, theories, and what the information implies", value: "B" },
   },
   {
-    id: "q4",
+    id: "sn2",
     dimension: "SN",
     system: "mbti",
     prompt: "You are more drawn to:",
@@ -49,7 +81,34 @@ export const QUESTIONS: Question[] = [
     b: { text: "What could be — possibilities and future visions", value: "B" },
   },
   {
-    id: "q5",
+    id: "sn3",
+    dimension: "SN",
+    system: "mbti",
+    prompt: "Learning a new skill, you'd rather:",
+    a: { text: "Follow step-by-step instructions and proven methods", value: "A" },
+    b: { text: "Experiment and work out your own approach", value: "B" },
+  },
+  {
+    id: "sn4",
+    dimension: "SN",
+    system: "mbti",
+    prompt: "After hearing someone tell a story, what sticks with you most is:",
+    a: { text: "The specific details — what was said and what happened", value: "A" },
+    b: { text: "The overall feeling and meaning behind it", value: "B" },
+  },
+  {
+    id: "sn5",
+    dimension: "SN",
+    system: "mbti",
+    prompt: "You'd describe yourself as more:",
+    a: { text: "Realistic and grounded in the present", value: "A" },
+    b: { text: "Imaginative and focused on future possibility", value: "B" },
+  },
+
+  // Thinking / Feeling — decision basis, response to others' distress,
+  // conflict priorities, communication style, internal consistency vs. harmony.
+  {
+    id: "tf1",
     dimension: "TF",
     system: "mbti",
     prompt: "When making an important decision, what weighs most?",
@@ -57,7 +116,7 @@ export const QUESTIONS: Question[] = [
     b: { text: "How it affects the people involved", value: "B" },
   },
   {
-    id: "q6",
+    id: "tf2",
     dimension: "TF",
     system: "mbti",
     prompt: "People who know you well would say you lead with:",
@@ -65,7 +124,34 @@ export const QUESTIONS: Question[] = [
     b: { text: "Your heart — empathy and values", value: "B" },
   },
   {
-    id: "q7",
+    id: "tf3",
+    dimension: "TF",
+    system: "mbti",
+    prompt: "When a friend vents to you about a problem, your first instinct is to:",
+    a: { text: "Help them think it through or find a solution", value: "A" },
+    b: { text: "Validate how they're feeling before anything else", value: "B" },
+  },
+  {
+    id: "tf4",
+    dimension: "TF",
+    system: "mbti",
+    prompt: "In a disagreement, you care more about:",
+    a: { text: "Getting to the correct or fair answer", value: "A" },
+    b: { text: "Protecting the relationship and keeping the peace", value: "B" },
+  },
+  {
+    id: "tf5",
+    dimension: "TF",
+    system: "mbti",
+    prompt: "You're more likely to be described as:",
+    a: { text: "Direct and honest, even if it stings a little", value: "A" },
+    b: { text: "Tactful and diplomatic, even if it's less direct", value: "B" },
+  },
+
+  // Judging / Perceiving — planning vs. spontaneity, deadlines, closure
+  // vs. openness, decision finality, organization.
+  {
+    id: "jp1",
     dimension: "JP",
     system: "mbti",
     prompt: "Your ideal work style is:",
@@ -73,12 +159,36 @@ export const QUESTIONS: Question[] = [
     b: { text: "Flexible — I like staying open and adapting as I go", value: "B" },
   },
   {
-    id: "q8",
+    id: "jp2",
     dimension: "JP",
     system: "mbti",
     prompt: "Deadlines make you feel:",
     a: { text: "Reassured — they help me stay on track", value: "A" },
     b: { text: "Constrained — I prefer to keep options open", value: "B" },
+  },
+  {
+    id: "jp3",
+    dimension: "JP",
+    system: "mbti",
+    prompt: "Packing for a trip, you usually:",
+    a: { text: "Make a list and pack with time to spare", value: "A" },
+    b: { text: "Throw things together close to when you leave", value: "B" },
+  },
+  {
+    id: "jp4",
+    dimension: "JP",
+    system: "mbti",
+    prompt: "Once you've made a decision, you tend to:",
+    a: { text: "Consider it settled and move on", value: "A" },
+    b: { text: "Stay open to revisiting it if something new comes up", value: "B" },
+  },
+  {
+    id: "jp5",
+    dimension: "JP",
+    system: "mbti",
+    prompt: "Your desk, room, or files are generally:",
+    a: { text: "Organized — everything has its place", value: "A" },
+    b: { text: "Lived-in — a bit of chaos doesn't bother you", value: "B" },
   },
 
   // ── ASTROLOGY ────────────────────────────────────────────────────────────
@@ -89,6 +199,14 @@ export const QUESTIONS: Question[] = [
     prompt: "Which environment makes you feel most alive and like yourself?",
     a: { text: "Mountains, forests, or stable ground (Earth / Water)", value: "A" },
     b: { text: "Open skies, travel, fire, and movement (Fire / Air)", value: "B" },
+  },
+  {
+    id: "q20",
+    dimension: "element",
+    system: "astro",
+    prompt: "Your energy is best described as:",
+    a: { text: "Steady and grounded — I sustain and nurture", value: "A" },
+    b: { text: "Dynamic and expansive — I ignite and explore", value: "B" },
   },
   {
     id: "q10",
@@ -163,23 +281,5 @@ export const QUESTIONS: Question[] = [
     prompt: "When unexpected events derail your plans, you tend to:",
     a: { text: "Problem-solve quickly and reassert control", value: "A" },
     b: { text: "Look for what the disruption might be pointing toward", value: "B" },
-  },
-
-  // ── CROSS-SYSTEM ─────────────────────────────────────────────────────────
-  {
-    id: "q19",
-    dimension: "SN",
-    system: "mbti",
-    prompt: "You find yourself more fascinated by:",
-    a: { text: "How things work in practice right now", value: "A" },
-    b: { text: "What underlying patterns connect everything", value: "B" },
-  },
-  {
-    id: "q20",
-    dimension: "element",
-    system: "astro",
-    prompt: "Your energy is best described as:",
-    a: { text: "Steady and grounded — I sustain and nurture", value: "A" },
-    b: { text: "Dynamic and expansive — I ignite and explore", value: "B" },
   },
 ];
