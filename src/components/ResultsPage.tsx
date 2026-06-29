@@ -256,7 +256,7 @@ export function ResultsPage({ result, name, onRestart }: Props) {
           AI SYNTHESIS
         </p>
         {!aiText && !aiLoading && (
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
+          <div className="no-print" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
             <div>
               <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 600, fontSize: 22, margin: "0 0 8px" }}>
                 Get your personal narrative
@@ -286,7 +286,7 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         )}
 
         {aiLoading && !aiText && (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
+          <div className="no-print" style={{ textAlign: "center", padding: "40px 0" }}>
             <svg width={40} height={40} viewBox="0 0 24 24" style={{ animation: "spin 3s linear infinite", margin: "0 auto 16px" }}>
               <polygon points="12,3 21,19 3,19" fill="none" stroke="var(--border)" strokeWidth="1.2" />
               <circle cx="12" cy="3" r="2.2" fill={MBTI_COLOR} />
@@ -311,7 +311,22 @@ export function ResultsPage({ result, name, onRestart }: Props) {
       </section>
 
       {/* ── FOOTER ACTIONS ───────────────────────────────────── */}
-      <div style={{ textAlign: "center", paddingTop: 8 }}>
+      <div className="no-print" style={{ textAlign: "center", paddingTop: 8, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <button
+          onClick={() => window.print()}
+          style={{
+            fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
+            fontSize: 14,
+            color: "var(--muted)",
+            background: "none",
+            border: "1px solid var(--border)",
+            borderRadius: 99,
+            padding: "10px 26px",
+            cursor: "pointer",
+          }}
+        >
+          ⤓ Export PDF
+        </button>
         <button
           onClick={onRestart}
           style={{

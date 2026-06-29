@@ -51,3 +51,33 @@ html, body {
 input, select, textarea {
   font-family: 'Hanken Grotesk', sans-serif;
 }
+
+/* Print layout — used when exporting results to PDF via window.print() */
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --surface: #FAF8F2;
+    --ink: #1A1712;
+    --muted: #4A453C;
+    --faint: #756E61;
+    --border: #D8D1C3;
+    --border-light: #E7E1D4;
+  }
+
+  @page {
+    margin: 0.5in;
+  }
+
+  html, body {
+    background: #FFFFFF;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  section, .print-avoid-break {
+    break-inside: avoid;
+  }
+}

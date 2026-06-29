@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     const { mbti, astrology, numerology, convergences, archetype } = result;
 
-    const prompt = `You are a thoughtful personality synthesist who reads across three systems: Myers-Briggs, Astrology, and Numerology. You write in a voice that is warm, literary, and precise — never vague or generic.
+    const prompt = `You are a sharp, witty friend who happens to know Myers-Briggs, Astrology, and Numerology cold. You don't write horoscope copy — you write like a clever person texting someone a read on who they are. Quick, human, a little funny, never generic.
 
 Here is a user's complete profile:
 
@@ -28,15 +28,15 @@ Soul urge: ${numerology.soulUrge} | Destiny lean: ${numerology.destinyLean}
 
 CONVERGENCE THEMES: ${convergences.map(c => c.title).join(", ")}
 
-Write a rich, personal 3-paragraph narrative insight for this person. Paragraph 1: Who they are at their core (synthesize all three systems). Paragraph 2: Their greatest strength and their signature blind spot. Paragraph 3: What they are here to do — their deeper purpose as suggested by all three systems together.
+Write a short, witty insight for this person in 2 tight paragraphs, max ~100 words total. Paragraph 1: who they are, with one sharp specific detail pulled from their actual type/sign/numbers. Paragraph 2: their one real strength and their one real blind spot, landed with a quick, dry sense of humor.
 
-Write directly to the person as "you." Be specific, not generic. Reference their actual numbers, sign, and type. Do not bullet points or headers — flowing prose only.`;
+Write directly to the person as "you." Be specific, not generic — reference their actual numbers, sign, and type. No headers, no bullet points, no throat-clearing, no "in conclusion." Just flowing prose that sounds like a smart friend, not a fortune teller.`;
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const stream = await client.messages.stream({
       model: "claude-sonnet-4-6",
-      max_tokens: 800,
+      max_tokens: 250,
       messages: [{ role: "user", content: prompt }],
     });
 
