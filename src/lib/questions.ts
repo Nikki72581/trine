@@ -19,8 +19,8 @@ export const QUESTIONS: Question[] = [
   { id: "ei1", dimension: "EI", system: "mbti", direction:  1, text: "I feel energized after spending time with a large group of people" },
   { id: "ei2", dimension: "EI", system: "mbti", direction:  1, text: "I think out loud and talk through my ideas with others" },
   { id: "ei3", dimension: "EI", system: "mbti", direction:  1, text: "I enjoy meeting lots of new people and expanding my social circle" },
-  { id: "ei4", dimension: "EI", system: "mbti", direction:  1, text: "I am comfortable being the center of attention" },
-  { id: "ei5", dimension: "EI", system: "mbti", direction:  1, text: "I start conversations easily, even with strangers" },
+  { id: "ei4", dimension: "EI", system: "mbti", direction: -1, text: "I find it draining to be put in the spotlight or made the center of attention" },
+  { id: "ei5", dimension: "EI", system: "mbti", direction: -1, text: "I tend to observe and listen before joining a conversation in an unfamiliar group" },
   { id: "ei6", dimension: "EI", system: "mbti", direction: -1, text: "I genuinely need time alone to recharge after being around people" },
   { id: "ei7", dimension: "EI", system: "mbti", direction: -1, text: "I process ideas best by reflecting on my own first" },
 
@@ -28,8 +28,8 @@ export const QUESTIONS: Question[] = [
   { id: "sn1", dimension: "SN", system: "mbti", direction:  1, text: "I trust concrete facts and what I can directly see or measure" },
   { id: "sn2", dimension: "SN", system: "mbti", direction:  1, text: "I focus on what is real and present rather than what could be" },
   { id: "sn3", dimension: "SN", system: "mbti", direction:  1, text: "I prefer step-by-step, practical instructions" },
-  { id: "sn4", dimension: "SN", system: "mbti", direction:  1, text: "I remember events in specific, concrete detail" },
-  { id: "sn5", dimension: "SN", system: "mbti", direction:  1, text: "I like using established methods that have been proven to work" },
+  { id: "sn4", dimension: "SN", system: "mbti", direction: -1, text: "I am more drawn to the meaning or pattern behind events than the specific facts" },
+  { id: "sn5", dimension: "SN", system: "mbti", direction: -1, text: "I enjoy imagining how things could be done differently more than refining what already works" },
   { id: "sn6", dimension: "SN", system: "mbti", direction: -1, text: "I have a vivid imagination and love exploring abstract ideas" },
   { id: "sn7", dimension: "SN", system: "mbti", direction: -1, text: "I often lose track of details when I am focused on the big picture" },
 
@@ -37,8 +37,8 @@ export const QUESTIONS: Question[] = [
   { id: "tf1", dimension: "TF", system: "mbti", direction:  1, text: "I make decisions based on logic and objective analysis" },
   { id: "tf2", dimension: "TF", system: "mbti", direction:  1, text: "I value honesty and accuracy, even when it is blunt" },
   { id: "tf3", dimension: "TF", system: "mbti", direction:  1, text: "I can stay calm and objective even in highly emotional situations" },
-  { id: "tf4", dimension: "TF", system: "mbti", direction:  1, text: "I think the same rules should apply equally to everyone" },
-  { id: "tf5", dimension: "TF", system: "mbti", direction:  1, text: "I am more swayed by a well-reasoned argument than by a personal story" },
+  { id: "tf4", dimension: "TF", system: "mbti", direction: -1, text: "I naturally tune into how people around me are feeling, even when they do not say it" },
+  { id: "tf5", dimension: "TF", system: "mbti", direction: -1, text: "I find it easy to put myself in someone else's shoes, even when I strongly disagree with them" },
   { id: "tf6", dimension: "TF", system: "mbti", direction: -1, text: "I make decisions based on how they will affect the people involved" },
   { id: "tf7", dimension: "TF", system: "mbti", direction: -1, text: "I easily pick up on and absorb the emotions of people around me" },
 
@@ -46,8 +46,8 @@ export const QUESTIONS: Question[] = [
   { id: "jp1", dimension: "JP", system: "mbti", direction:  1, text: "I like to have a clear plan before I start something" },
   { id: "jp2", dimension: "JP", system: "mbti", direction:  1, text: "I finish tasks well before the deadline" },
   { id: "jp3", dimension: "JP", system: "mbti", direction:  1, text: "I like my living and working space to be tidy and organized" },
-  { id: "jp4", dimension: "JP", system: "mbti", direction:  1, text: "Once I have made a decision, I move on and do not second-guess it" },
-  { id: "jp5", dimension: "JP", system: "mbti", direction:  1, text: "I prefer to follow a schedule" },
+  { id: "jp4", dimension: "JP", system: "mbti", direction: -1, text: "I prefer keeping my options open rather than locking in a decision too early" },
+  { id: "jp5", dimension: "JP", system: "mbti", direction: -1, text: "I find that having too many plans or commitments starts to feel restrictive" },
   { id: "jp6", dimension: "JP", system: "mbti", direction: -1, text: "I enjoy the energy and possibilities of unexpected changes" },
   { id: "jp7", dimension: "JP", system: "mbti", direction: -1, text: "I find rigid to-do lists stifling — I would rather stay flexible" },
 
