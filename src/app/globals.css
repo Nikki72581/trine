@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --cream: #FAF8F5;
-  --ink: #292521;
-  --muted: #6E665E;
-  --faint: #9A938B;
-  --border: #E2DCD3;
-  --border-light: #ECE7E0;
-  --mbti: #6E78C9;
-  --astro: #9A6FD0;
-  --num: #C77399;
+  color-scheme: dark;
+  --bg: #15130F;
+  --surface: #1F1B16;
+  --ink: #F3EEE6;
+  --muted: #B7AEA1;
+  --faint: #8B8276;
+  --border: #3A352D;
+  --border-light: #2A2620;
+  --mbti: #8B93E8;
+  --astro: #B98FE8;
+  --num: #E592AE;
 }
 
 * { box-sizing: border-box; }
@@ -17,7 +19,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--cream);
+  background: var(--bg);
   color: var(--ink);
   font-family: 'Hanken Grotesk', sans-serif;
 }

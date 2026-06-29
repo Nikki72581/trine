@@ -31,7 +31,7 @@ export function TrineHeader({ stepLabel }: Props) {
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: 11,
           letterSpacing: "0.14em",
-          color: "#9A938B",
+          color: "var(--faint)",
         }}>
           {stepLabel}
         </span>

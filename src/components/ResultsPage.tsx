@@ -4,9 +4,9 @@ import type { TrineResult } from "@/lib/compute";
 import { clarityLabel } from "@/lib/compute";
 import { TriangleDiagram } from "./TriangleDiagram";
 
-const MBTI_COLOR  = "#6E78C9";
-const ASTRO_COLOR = "#9A6FD0";
-const NUM_COLOR   = "#C77399";
+const MBTI_COLOR  = "#8B93E8";
+const ASTRO_COLOR = "#B98FE8";
+const NUM_COLOR   = "#E592AE";
 
 function Pill({ color, label, value }: { color: string; label: string; value: string }) {
   return (
@@ -18,7 +18,7 @@ function Pill({ color, label, value }: { color: string; label: string; value: st
       minWidth: 120,
     }}>
       <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.1em", color, textTransform: "uppercase" }}>{label}</span>
-      <span style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontSize: 22, fontWeight: 600, color: "#292521" }}>{value}</span>
+      <span style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontSize: 22, fontWeight: 600, color: "var(--ink)" }}>{value}</span>
     </div>
   );
 }
@@ -27,13 +27,13 @@ function BarRow({ label, pct, letter, color }: { label: string; pct: number; let
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-        <span style={{ fontSize: 13, color: "#6E665E" }}>{label}</span>
+        <span style={{ fontSize: 13, color: "var(--muted)" }}>{label}</span>
         <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color, fontWeight: 500 }}>{letter} · {pct}%</span>
       </div>
-      <div style={{ height: 6, background: "#ECE7E0", borderRadius: 99, overflow: "hidden" }}>
+      <div style={{ height: 6, background: "var(--border-light)", borderRadius: 99, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${pct}%`, background: color, borderRadius: 99, transition: "width 1s ease" }} />
       </div>
-      <span style={{ fontSize: 11, color: "#9A938B" }}>{clarityLabel(pct)} preference</span>
+      <span style={{ fontSize: 11, color: "var(--faint)" }}>{clarityLabel(pct)} preference</span>
     </div>
   );
 }
@@ -86,19 +86,19 @@ export function ResultsPage({ result, name, onRestart }: Props) {
     <div style={{ width: "100%", maxWidth: 1040, flex: 1, paddingBottom: 90, animation: "fadeUp .55s ease both" }}>
 
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section style={{ textAlign: "center", padding: "18px 0 46px", borderBottom: "1px solid #ECE7E0" }}>
+      <section style={{ textAlign: "center", padding: "18px 0 46px", borderBottom: "1px solid var(--border-light)" }}>
         <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, letterSpacing: "0.18em", color: ASTRO_COLOR, display: "block", marginBottom: 6 }}>
           {eyebrow}
         </span>
         {name && (
-          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.1em", color: "#9A938B", display: "block", marginBottom: 14 }}>
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.1em", color: "var(--faint)", display: "block", marginBottom: 14 }}>
             {name.toUpperCase()}
           </span>
         )}
         <h1 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 600, fontSize: "clamp(36px, 6vw, 60px)", lineHeight: 1.02, letterSpacing: "-0.025em", margin: "0 0 20px" }}>
           {archetype}
         </h1>
-        <p style={{ fontSize: 18, lineHeight: 1.6, color: "#574F47", maxWidth: 560, margin: "0 auto 34px" }}>
+        <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--muted)", maxWidth: 560, margin: "0 auto 34px" }}>
           {tagline}
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -109,23 +109,23 @@ export function ResultsPage({ result, name, onRestart }: Props) {
       </section>
 
       {/* ── TWO-COL: DIAGRAM + CONVERGENCES ─────────────────── */}
-      <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, padding: "48px 0 48px", borderBottom: "1px solid #ECE7E0", alignItems: "start" }}>
+      <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, padding: "48px 0 48px", borderBottom: "1px solid var(--border-light)", alignItems: "start" }}>
         <div>
-          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "#9A938B", marginBottom: 24 }}>
+          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "var(--faint)", marginBottom: 24 }}>
             WHERE YOUR SYSTEMS CONVERGE
           </p>
           <TriangleDiagram result={result} />
         </div>
 
         <div>
-          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "#9A938B", marginBottom: 24 }}>
+          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "var(--faint)", marginBottom: 24 }}>
             CONVERGENCE THEMES
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {convergences.map(c => (
               <div key={c.title} style={{
-                background: "#fff",
-                border: "1px solid #E2DCD3",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: 14,
                 padding: "20px 22px",
               }}>
@@ -151,9 +151,9 @@ export function ResultsPage({ result, name, onRestart }: Props) {
                       letterSpacing: "0.12em",
                       padding: "3px 8px",
                       borderRadius: 4,
-                      background: "#29252118",
-                      color: "#574F47",
-                      border: "1px solid #29252122",
+                      background: "#F3EEE614",
+                      color: "var(--muted)",
+                      border: "1px solid #F3EEE630",
                     }}>
                       CONVERGENCE
                     </span>
@@ -162,7 +162,7 @@ export function ResultsPage({ result, name, onRestart }: Props) {
                 <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 600, fontSize: 17, margin: "0 0 8px" }}>
                   {c.title}
                 </h3>
-                <p style={{ fontSize: 14, lineHeight: 1.6, color: "#574F47", margin: 0 }}>{c.body}</p>
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--muted)", margin: 0 }}>{c.body}</p>
               </div>
             ))}
           </div>
@@ -170,14 +170,14 @@ export function ResultsPage({ result, name, onRestart }: Props) {
       </section>
 
       {/* ── THREE SYSTEM BREAKDOWNS ──────────────────────────── */}
-      <section style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, padding: "48px 0", borderBottom: "1px solid #ECE7E0" }}>
+      <section style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, padding: "48px 0", borderBottom: "1px solid var(--border-light)" }}>
 
         {/* MBTI */}
-        <div style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${MBTI_COLOR}` }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${MBTI_COLOR}` }}>
           <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: MBTI_COLOR, margin: "0 0 6px" }}>MYERS–BRIGGS</p>
           <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 32, letterSpacing: "0.03em", color: MBTI_COLOR, margin: "0 0 4px" }}>{mbti.type}</h3>
-          <p style={{ fontSize: 13, color: "#6E665E", margin: "0 0 16px", lineHeight: 1.5 }}>{mbti.description}</p>
-          <p style={{ fontSize: 11.5, color: "#9A938B", margin: "0 0 18px", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 16px", lineHeight: 1.5 }}>{mbti.description}</p>
+          <p style={{ fontSize: 11.5, color: "var(--faint)", margin: "0 0 18px", lineHeight: 1.5 }}>
             Clarity reflects how consistently you leaned one way, not strength or skill — a slight preference is just as valid as a very clear one.
           </p>
           <BarRow label="Introvert / Extravert" pct={mbti.EI_pct} letter={mbti.EI} color={MBTI_COLOR} />
@@ -192,24 +192,24 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         </div>
 
         {/* Astrology */}
-        <div style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${ASTRO_COLOR}` }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${ASTRO_COLOR}` }}>
           <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: ASTRO_COLOR, margin: "0 0 6px" }}>ASTROLOGY</p>
           <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 28, color: ASTRO_COLOR, margin: "0 0 2px" }}>
             {astrology.symbol} {astrology.sunSign}
           </h3>
-          <p style={{ fontSize: 12, color: "#9A938B", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.06em", margin: "0 0 4px" }}>
+          <p style={{ fontSize: 12, color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.06em", margin: "0 0 4px" }}>
             {astrology.element} · {astrology.modality}
           </p>
-          <p style={{ fontSize: 13, color: "#6E665E", margin: "0 0 22px", lineHeight: 1.5 }}>{astrology.description}</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 22px", lineHeight: 1.5 }}>{astrology.description}</p>
           <div style={{ marginBottom: 14 }}>
-            <p style={{ fontSize: 11, fontFamily: "'IBM Plex Mono', monospace", color: "#9A938B", marginBottom: 6, letterSpacing: "0.06em" }}>LUNAR SENSITIVITY</p>
-            <div style={{ height: 6, background: "#ECE7E0", borderRadius: 99, overflow: "hidden" }}>
+            <p style={{ fontSize: 11, fontFamily: "'IBM Plex Mono', monospace", color: "var(--faint)", marginBottom: 6, letterSpacing: "0.06em" }}>LUNAR SENSITIVITY</p>
+            <div style={{ height: 6, background: "var(--border-light)", borderRadius: 99, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${astrology.lunarScore}%`, background: ASTRO_COLOR, borderRadius: 99 }} />
             </div>
-            <p style={{ fontSize: 11, color: "#9A938B", marginTop: 4 }}>{astrology.lunarScore}/100</p>
+            <p style={{ fontSize: 11, color: "var(--faint)", marginTop: 4 }}>{astrology.lunarScore}/100</p>
           </div>
-          <p style={{ fontSize: 12, color: "#9A938B", marginBottom: 12 }}>
-            Elemental lean: <strong style={{ color: "#574F47" }}>{astrology.elementFromAnswers}</strong>
+          <p style={{ fontSize: 12, color: "var(--faint)", marginBottom: 12 }}>
+            Elemental lean: <strong style={{ color: "var(--muted)" }}>{astrology.elementFromAnswers}</strong>
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {astrology.traits.map(t => (
@@ -219,27 +219,27 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         </div>
 
         {/* Numerology */}
-        <div style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${NUM_COLOR}` }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${NUM_COLOR}` }}>
           <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: NUM_COLOR, margin: "0 0 6px" }}>NUMEROLOGY</p>
           <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 32, color: NUM_COLOR, margin: "0 0 2px" }}>
             {numerology.lifePath}
           </h3>
-          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#9A938B", letterSpacing: "0.06em", margin: "0 0 4px" }}>
+          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "var(--faint)", letterSpacing: "0.06em", margin: "0 0 4px" }}>
             LIFE PATH · {numerology.lifePathTheme}
           </p>
-          <p style={{ fontSize: 13, color: "#6E665E", margin: "0 0 16px", lineHeight: 1.5 }}>{numerology.lifePathDesc}</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 16px", lineHeight: 1.5 }}>{numerology.lifePathDesc}</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "#9A938B", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>EXPRESSION NO.</span>
-              <span style={{ fontWeight: 600, color: "#292521" }}>{numerology.expressionNumber}</span>
+              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>EXPRESSION NO.</span>
+              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.expressionNumber}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "#9A938B", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>SOUL URGE</span>
-              <span style={{ fontWeight: 600, color: "#292521" }}>{numerology.soulUrge}</span>
+              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>SOUL URGE</span>
+              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.soulUrge}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "#9A938B", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>DESTINY LEAN</span>
-              <span style={{ fontWeight: 600, color: "#292521" }}>{numerology.destinyLean}</span>
+              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>DESTINY LEAN</span>
+              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.destinyLean}</span>
             </div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -252,16 +252,16 @@ export function ResultsPage({ result, name, onRestart }: Props) {
 
       {/* ── AI INSIGHT ───────────────────────────────────────── */}
       <section style={{ padding: "48px 0" }}>
-        <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "#9A938B", marginBottom: 16 }}>
+        <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", color: "var(--faint)", marginBottom: 16 }}>
           AI SYNTHESIS
         </p>
         {!aiText && !aiLoading && (
-          <div style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "32px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
             <div>
               <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 600, fontSize: 22, margin: "0 0 8px" }}>
                 Get your personal narrative
               </h3>
-              <p style={{ fontSize: 15, color: "#574F47", margin: 0, maxWidth: 480, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 15, color: "var(--muted)", margin: 0, maxWidth: 480, lineHeight: 1.6 }}>
                 A Claude-generated insight synthesizes all three systems into a rich, personalized portrait — who you are, your strengths, your blind spots, and what you&apos;re here to do.
               </p>
             </div>
@@ -271,8 +271,8 @@ export function ResultsPage({ result, name, onRestart }: Props) {
                 fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
                 fontSize: 15,
                 fontWeight: 500,
-                color: "#FAF8F5",
-                background: "#292521",
+                color: "var(--bg)",
+                background: "var(--ink)",
                 border: "none",
                 borderRadius: 99,
                 padding: "13px 28px",
@@ -288,23 +288,23 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         {aiLoading && !aiText && (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
             <svg width={40} height={40} viewBox="0 0 24 24" style={{ animation: "spin 3s linear infinite", margin: "0 auto 16px" }}>
-              <polygon points="12,3 21,19 3,19" fill="none" stroke="#E2DCD3" strokeWidth="1.2" />
+              <polygon points="12,3 21,19 3,19" fill="none" stroke="var(--border)" strokeWidth="1.2" />
               <circle cx="12" cy="3" r="2.2" fill={MBTI_COLOR} />
               <circle cx="21" cy="19" r="2.2" fill={ASTRO_COLOR} />
               <circle cx="3" cy="19" r="2.2" fill={NUM_COLOR} />
             </svg>
-            <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#9A938B", letterSpacing: "0.06em" }}>Synthesizing your profile…</p>
+            <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "var(--faint)", letterSpacing: "0.06em" }}>Synthesizing your profile…</p>
           </div>
         )}
 
         {aiText && (
-          <div ref={aiRef} style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "32px 28px" }}>
-            <p style={{ fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.08em", color: "#9A938B", marginBottom: 20 }}>
+          <div ref={aiRef} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 28px" }}>
+            <p style={{ fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.08em", color: "var(--faint)", marginBottom: 20 }}>
               ✦ CLAUDE SYNTHESIS · {archetype.toUpperCase()}
             </p>
-            <div style={{ fontSize: 16, lineHeight: 1.8, color: "#33302B", whiteSpace: "pre-wrap" }}>
+            <div style={{ fontSize: 16, lineHeight: 1.8, color: "var(--ink)", whiteSpace: "pre-wrap" }}>
               {aiText}
-              {!aiDone && <span style={{ animation: "pulse 1s infinite", display: "inline-block", width: 2, height: 18, background: "#9A6FD0", marginLeft: 2, verticalAlign: "middle" }} />}
+              {!aiDone && <span style={{ animation: "pulse 1s infinite", display: "inline-block", width: 2, height: 18, background: ASTRO_COLOR, marginLeft: 2, verticalAlign: "middle" }} />}
             </div>
           </div>
         )}
@@ -317,9 +317,9 @@ export function ResultsPage({ result, name, onRestart }: Props) {
           style={{
             fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
             fontSize: 14,
-            color: "#6E665E",
+            color: "var(--muted)",
             background: "none",
-            border: "1px solid #E2DCD3",
+            border: "1px solid var(--border)",
             borderRadius: 99,
             padding: "10px 26px",
             cursor: "pointer",
