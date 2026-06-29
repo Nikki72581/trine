@@ -38,6 +38,16 @@ export interface MBTIResult {
   traits: string[];
 }
 
+// Mirrors the official MBTI Manual's preference clarity categories (slight,
+// moderate, clear, very clear) — clarity reflects how consistently someone
+// leaned one way across the axis's items, not strength of skill or maturity.
+export function clarityLabel(pct: number): "Slight" | "Moderate" | "Clear" | "Very Clear" {
+  if (pct < 60) return "Slight";
+  if (pct < 75) return "Moderate";
+  if (pct < 90) return "Clear";
+  return "Very Clear";
+}
+
 const MBTI_DESCRIPTIONS: Record<string, { description: string; traits: string[] }> = {
   INTJ: { description: "The Architect — visionary, independent, strategic", traits: ["Visionary", "Decisive", "High standards", "Private"] },
   INTP: { description: "The Logician — analytical, inventive, theoretical", traits: ["Analytical", "Inventive", "Logical", "Reserved"] },

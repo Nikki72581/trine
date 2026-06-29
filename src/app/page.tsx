@@ -295,44 +295,62 @@ export default function Home() {
           </h2>
 
           {q.system === "mbti" ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
-              {orderedOptions.map((opt) => (
-                <div
-                  key={opt.value}
-                  style={{
-                    background: "#fff", border: "1px solid #E7E1D9",
-                    borderRadius: 14, padding: "18px 20px 16px",
-                  }}
-                >
-                  <p style={{
-                    fontFamily: "'Hanken Grotesk', sans-serif",
-                    fontSize: 17, fontWeight: 500, color: "#33302B",
-                    lineHeight: 1.4, margin: "0 0 14px",
-                  }}>
+            <div>
+              {qIndex === 0 && (
+                <p style={{
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, letterSpacing: "0.02em",
+                  color: "#7A5BA8", background: "#F4EEFA", border: "1px solid #E3D5F5",
+                  borderRadius: 10, padding: "11px 14px", margin: "0 0 16px", lineHeight: 1.55,
+                }}>
+                  Read both statements below, then choose how strongly the one closer to you fits — there&apos;s no neutral middle, so go with your gut.
+                </p>
+              )}
+              <div style={{ background: "#fff", border: "1px solid #E7E1D9", borderRadius: 14, overflow: "hidden" }}>
+                {orderedOptions.map((opt, i) => (
+                  <p
+                    key={opt.value}
+                    style={{
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: 16.5, fontWeight: 500, color: "#33302B",
+                      lineHeight: 1.42, margin: 0,
+                      padding: "16px 20px",
+                      borderBottom: i === 0 ? "1px solid #ECE7E0" : "none",
+                    }}
+                  >
                     {opt.text}
                   </p>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {([["1", "Somewhat"], ["2", "Strongly"]] as const).map(([strength, label]) => (
-                      <button
-                        key={strength}
-                        onClick={() => answerQuestion(`${opt.value}${strength}` as AnswerValue)}
-                        style={{
-                          flex: 1,
-                          fontFamily: "'IBM Plex Mono', monospace",
-                          fontSize: 12.5, letterSpacing: "0.06em", color: "#6E665E",
-                          background: "#FAF8F5", border: "1px solid #E7E1D9",
-                          borderRadius: 9, padding: "10px 0",
-                          cursor: "pointer", transition: "border-color .15s, color .15s",
-                        }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#9A6FD0"; (e.currentTarget as HTMLElement).style.color = "#9A6FD0"; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#E7E1D9"; (e.currentTarget as HTMLElement).style.color = "#6E665E"; }}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+                ))}
+                <div style={{ display: "flex", borderTop: "1px solid #E7E1D9" }}>
+                  {[
+                    { val: `${orderedOptions[0].value}2`, label: "Strongly", text: orderedOptions[0].text },
+                    { val: `${orderedOptions[0].value}1`, label: "Somewhat", text: orderedOptions[0].text },
+                    { val: `${orderedOptions[1].value}1`, label: "Somewhat", text: orderedOptions[1].text },
+                    { val: `${orderedOptions[1].value}2`, label: "Strongly", text: orderedOptions[1].text },
+                  ].map((cell, i) => (
+                    <button
+                      key={cell.val}
+                      onClick={() => answerQuestion(cell.val as AnswerValue)}
+                      aria-label={`${cell.label} — ${cell.text}`}
+                      title={cell.text}
+                      style={{
+                        flex: 1,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 12.5, letterSpacing: "0.05em", color: "#6E665E",
+                        background: "#FAF8F5",
+                        border: "none",
+                        borderLeft: i === 0 ? "none" : i === 2 ? "1px solid #C9C1B8" : "1px solid #ECE7E0",
+                        padding: "14px 4px",
+                        cursor: "pointer",
+                        transition: "background .15s, color .15s",
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#F4EEFA"; (e.currentTarget as HTMLElement).style.color = "#9A6FD0"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#FAF8F5"; (e.currentTarget as HTMLElement).style.color = "#6E665E"; }}
+                    >
+                      {cell.label}
+                    </button>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>

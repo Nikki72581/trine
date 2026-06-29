@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import type { TrineResult } from "@/lib/compute";
+import { clarityLabel } from "@/lib/compute";
 import { TriangleDiagram } from "./TriangleDiagram";
 
 const MBTI_COLOR  = "#6E78C9";
@@ -32,6 +33,7 @@ function BarRow({ label, pct, letter, color }: { label: string; pct: number; let
       <div style={{ height: 6, background: "#ECE7E0", borderRadius: 99, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${pct}%`, background: color, borderRadius: 99, transition: "width 1s ease" }} />
       </div>
+      <span style={{ fontSize: 11, color: "#9A938B" }}>{clarityLabel(pct)} preference</span>
     </div>
   );
 }
@@ -174,7 +176,10 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         <div style={{ background: "#fff", border: "1px solid #E2DCD3", borderRadius: 16, padding: "24px 22px", borderTop: `3px solid ${MBTI_COLOR}` }}>
           <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: MBTI_COLOR, margin: "0 0 6px" }}>MYERS–BRIGGS</p>
           <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 32, letterSpacing: "0.03em", color: MBTI_COLOR, margin: "0 0 4px" }}>{mbti.type}</h3>
-          <p style={{ fontSize: 13, color: "#6E665E", margin: "0 0 22px", lineHeight: 1.5 }}>{mbti.description}</p>
+          <p style={{ fontSize: 13, color: "#6E665E", margin: "0 0 16px", lineHeight: 1.5 }}>{mbti.description}</p>
+          <p style={{ fontSize: 11.5, color: "#9A938B", margin: "0 0 18px", lineHeight: 1.5 }}>
+            Clarity reflects how consistently you leaned one way, not strength or skill — a slight preference is just as valid as a very clear one.
+          </p>
           <BarRow label="Introvert / Extravert" pct={mbti.EI_pct} letter={mbti.EI} color={MBTI_COLOR} />
           <BarRow label="Sensing / Intuition"   pct={mbti.SN_pct} letter={mbti.SN} color={MBTI_COLOR} />
           <BarRow label="Thinking / Feeling"     pct={mbti.TF_pct} letter={mbti.TF} color={MBTI_COLOR} />
