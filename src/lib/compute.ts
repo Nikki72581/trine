@@ -1,31 +1,26 @@
 import { QUESTIONS } from "./questions";
 
-// MBTI questions are answered on a 4-point strength scale ("A2" = strongly
-// A, "A1" = somewhat A, "B1" = somewhat B, "B2" = strongly B) so a response
-// can carry conviction, not just direction. Astrology/numerology questions
-// stay simple A/B picks.
-export type AnswerValue = "A" | "B" | "A1" | "A2" | "B1" | "B2";
+// All questions are answered on a 5-point Inaccurate → Accurate scale.
+// rating 1 = Strongly Inaccurate … 3 = Neutral … 5 = Strongly Accurate.
+// Each question has a direction (1 or -1) so that "Accurate" always pushes
+// toward the correct pole regardless of how the statement is phrased.
+export type AnswerValue = 1 | 2 | 3 | 4 | 5;
 export type Answers = Record<string, AnswerValue>;
-
-const STRENGTH_WEIGHT: Record<string, number> = { A2: 2, A1: 1, B1: -1, B2: -2, A: 1, B: -1 };
 
 // ── MBTI ─────────────────────────────────────────────────────────────────────
 function scoreDimension(answers: Answers, dim: string, aLetter: string, bLetter: string): [string, number] {
   const qs = QUESTIONS.filter(q => q.dimension === dim);
-  let weightSum = 0, aVotes = 0, bVotes = 0;
+  let weightSum = 0;
   for (const q of qs) {
-    const w = STRENGTH_WEIGHT[answers[q.id]] ?? 0;
-    weightSum += w;
-    if (w > 0) aVotes++;
-    else if (w < 0) bVotes++;
+    const rating = answers[q.id];
+    if (rating === undefined) continue;
+    // Convert 1-5 to -2…+2, then apply direction so positive always = A-pole
+    weightSum += q.direction * (rating - 3);
   }
-  // An odd question count per axis means a raw-vote tie is impossible, so
-  // this fallback always resolves the rare case where strength cancels out
-  // exactly — without defaulting every tie toward the same letter.
-  const aWins = weightSum !== 0 ? weightSum > 0 : aVotes > bVotes;
+  const aWins = weightSum >= 0;
   const maxWeight = qs.length * 2 || 1;
   const pct = Math.round(50 + (Math.abs(weightSum) / maxWeight) * 50);
-  return [aWins ? aLetter : bLetter, pct];
+  return [aWins ? aLetter : bLetter, Math.min(pct, 100)];
 }
 
 export interface MBTIResult {
@@ -134,31 +129,32 @@ export function getSunSign(month: number, day: number) {
 export function computeAstrology(answers: Answers, month: number, day: number): AstrologyResult {
   const sign = getSunSign(month, day);
 
-  // Element from answers (q9, q20)
+  // Element from answers (direction 1 = Earth/Water)
   const elementQs = QUESTIONS.filter(q => q.dimension === "element");
-  let earthWater = 0, fireAir = 0;
+  let elementScore = 0;
   for (const q of elementQs) {
-    if (answers[q.id] === "A") earthWater++;
-    else if (answers[q.id] === "B") fireAir++;
+    const r = answers[q.id] ?? 3;
+    elementScore += q.direction * (r - 3);
   }
-  const elementFromAnswers = earthWater >= fireAir ? "Earth/Water" : "Fire/Air";
+  const elementFromAnswers = elementScore >= 0 ? "Earth/Water" : "Fire/Air";
 
-  // Modality from answers (q10)
+  // Modality from answers (direction 1 = Cardinal/Fixed)
   const modalQs = QUESTIONS.filter(q => q.dimension === "modality");
-  let cardinal = 0, mutable = 0;
+  let modalScore = 0;
   for (const q of modalQs) {
-    if (answers[q.id] === "A") cardinal++;
-    else mutable++;
+    const r = answers[q.id] ?? 3;
+    modalScore += q.direction * (r - 3);
   }
-  const modalityFromAnswers = cardinal >= mutable ? "Cardinal/Fixed" : "Mutable";
+  const modalityFromAnswers = modalScore >= 0 ? "Cardinal/Fixed" : "Mutable";
 
-  // Lunar score
+  // Lunar score 0-100 (direction 1 = high lunar / emotion-sensitive)
   const lunarQs = QUESTIONS.filter(q => q.dimension === "lunar");
-  let lunarB = 0;
+  let lunarSum = 0;
   for (const q of lunarQs) {
-    if (answers[q.id] === "B") lunarB++;
+    const r = answers[q.id] ?? 3;
+    lunarSum += q.direction * (r - 3) + 2;  // shift -2…+2 → 0…4
   }
-  const lunarScore = Math.round((lunarB / (lunarQs.length || 1)) * 100);
+  const lunarScore = Math.round((lunarSum / (lunarQs.length * 4 || 1)) * 100);
 
   const desc = ZODIAC_DESC[sign.name] ?? { description: "A unique celestial signature", traits: ["Unique", "Complex", "Rare", "Nuanced"] };
 
@@ -222,21 +218,23 @@ export function computeNumerology(answers: Answers, name: string, month: number,
   const exprRaw = clean.split("").reduce((s, c) => s + (PYTHAGOREAN[c] ?? 0), 0);
   const expressionNumber = reduceToSingleDigit(exprRaw);
 
-  // Soul urge from answers
+  // Soul urge from answers (direction 1 = Achievement)
   const soulQs = QUESTIONS.filter(q => q.dimension === "soul");
-  let achieveCount = 0;
+  let soulScore = 0;
   for (const q of soulQs) {
-    if (answers[q.id] === "A") achieveCount++;
+    const r = answers[q.id] ?? 3;
+    soulScore += q.direction * (r - 3);
   }
-  const soulUrge = achieveCount >= soulQs.length / 2 ? "Achievement" : "Connection";
+  const soulUrge = soulScore >= 0 ? "Achievement" : "Connection";
 
-  // Destiny lean from answers
+  // Destiny lean from answers (direction 1 = Self-made)
   const destinyQs = QUESTIONS.filter(q => q.dimension === "destiny");
-  let selfMade = 0;
+  let destinyScore = 0;
   for (const q of destinyQs) {
-    if (answers[q.id] === "A") selfMade++;
+    const r = answers[q.id] ?? 3;
+    destinyScore += q.direction * (r - 3);
   }
-  const destinyLean = selfMade >= destinyQs.length / 2 ? "Self-made" : "Called";
+  const destinyLean = destinyScore >= 0 ? "Self-made" : "Called";
 
   const lpMeta = LP_INFO[lifePath] ?? LP_INFO[9];
 
