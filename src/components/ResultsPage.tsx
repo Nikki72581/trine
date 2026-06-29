@@ -108,6 +108,36 @@ export function ResultsPage({ result, name, onRestart }: Props) {
         </div>
       </section>
 
+      {/* ── PRIVACY / EXPORT NOTICE ──────────────────────────── */}
+      <section className="no-print" style={{ padding: "26px 0" }}>
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 18,
+          background: "rgba(99,179,133,0.08)", border: "1px solid rgba(99,179,133,0.25)",
+          borderRadius: 14, padding: "18px 22px",
+        }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12, maxWidth: 560 }}>
+            <svg width={18} height={18} viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, marginTop: 2 }}>
+              <path d="M12 2.5 4 5.5v6c0 6 3.6 9 8 10 4.4-1 8-4 8-10v-6L12 2.5z" stroke="#63b385" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M8.5 12 11 14.5 16 9" stroke="#63b385" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+            <p style={{ fontSize: 13.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>
+              We don&apos;t collect or store any of your data. This reading lives only in your browser — once you close or refresh this tab, it&apos;s gone for good. Export a copy below if you want to keep it.
+            </p>
+          </div>
+          <button
+            onClick={() => window.print()}
+            style={{
+              fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
+              fontSize: 14, fontWeight: 500, color: "var(--bg)",
+              background: "#63b385", border: "none", borderRadius: 99,
+              padding: "11px 24px", cursor: "pointer", whiteSpace: "nowrap",
+            }}
+          >
+            ⤓ Export PDF
+          </button>
+        </div>
+      </section>
+
       {/* ── TWO-COL: DIAGRAM + CONVERGENCES ─────────────────── */}
       <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, padding: "48px 0 48px", borderBottom: "1px solid var(--border-light)", alignItems: "start" }}>
         <div>
@@ -311,37 +341,43 @@ export function ResultsPage({ result, name, onRestart }: Props) {
       </section>
 
       {/* ── FOOTER ACTIONS ───────────────────────────────────── */}
-      <div className="no-print" style={{ textAlign: "center", paddingTop: 8, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-        <button
-          onClick={() => window.print()}
-          style={{
-            fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
-            fontSize: 14,
-            color: "var(--muted)",
-            background: "none",
-            border: "1px solid var(--border)",
-            borderRadius: 99,
-            padding: "10px 26px",
-            cursor: "pointer",
-          }}
-        >
-          ⤓ Export PDF
-        </button>
-        <button
-          onClick={onRestart}
-          style={{
-            fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
-            fontSize: 14,
-            color: "var(--muted)",
-            background: "none",
-            border: "1px solid var(--border)",
-            borderRadius: 99,
-            padding: "10px 26px",
-            cursor: "pointer",
-          }}
-        >
-          ✦ Start a new reading
-        </button>
+      <div className="no-print" style={{ textAlign: "center", paddingTop: 8 }}>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 14 }}>
+          <button
+            onClick={() => window.print()}
+            style={{
+              fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#63b385",
+              background: "rgba(99,179,133,0.08)",
+              border: "1px solid rgba(99,179,133,0.35)",
+              borderRadius: 99,
+              padding: "10px 26px",
+              cursor: "pointer",
+            }}
+          >
+            ⤓ Export PDF
+          </button>
+          <button
+            onClick={onRestart}
+            style={{
+              fontFamily: "Space Grotesk, var(--font-hanken), sans-serif",
+              fontSize: 14,
+              color: "var(--muted)",
+              background: "none",
+              border: "1px solid var(--border)",
+              borderRadius: 99,
+              padding: "10px 26px",
+              cursor: "pointer",
+            }}
+          >
+            ✦ Start a new reading
+          </button>
+        </div>
+        <p style={{ fontSize: 11.5, color: "var(--faint)", margin: 0 }}>
+          Nothing on this page is saved anywhere — leaving or refreshing clears it for good.
+        </p>
       </div>
     </div>
   );

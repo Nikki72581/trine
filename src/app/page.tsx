@@ -275,109 +275,153 @@ export default function Home() {
         <main style={{
           width: "100%", maxWidth: 620, flex: 1,
           display: "flex", flexDirection: "column", justifyContent: "center",
-          padding: "30px 0 70px",
+          padding: "clamp(1.25rem, 4vw, 2.5rem) 0",
         }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, letterSpacing: "0.1em", color: "var(--faint)" }}>
-              QUESTION {qIndex + 1} / {QUESTIONS.length}
-            </span>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, letterSpacing: "0.1em", color: "var(--faint)" }}>
-              {dimLabels[q.dimension] ?? q.dimension} · {q.system.toUpperCase()}
-            </span>
-          </div>
-
-          {/* Progress bar */}
-          <div style={{ height: 4, background: "var(--border-light)", borderRadius: 99, overflow: "hidden", marginBottom: 42 }}>
-            <div style={{ height: "100%", width: progressWidth, background: "var(--ink)", borderRadius: 99, transition: "width .35s cubic-bezier(.4,0,.2,1)" }} />
-          </div>
-
-          <h2 style={{
-            fontFamily: "Space Grotesk, 'Hanken Grotesk', sans-serif", fontWeight: 600, fontSize: "clamp(22px, 4vw, 30px)",
-            lineHeight: 1.22, letterSpacing: "-0.01em", margin: "0 0 34px", minHeight: 80,
-          }}>
-            {q.prompt}
-          </h2>
-
           {q.system === "mbti" ? (
-            <div>
-              {qIndex === 0 && (
-                <p style={{
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, letterSpacing: "0.02em",
-                  color: ASTRO_COLOR, background: ASTRO_COLOR + "1A", border: `1px solid ${ASTRO_COLOR}40`,
-                  borderRadius: 10, padding: "11px 14px", margin: "0 0 16px", lineHeight: 1.55,
-                }}>
-                  Two statements, two sides of a spectrum. Read both, then click how strongly you lean toward one of them — the button sits under the statement it rates.
-                </p>
-              )}
-              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
-                {orderedOptions.map((opt, i) => (
-                  <div
-                    key={opt.value}
-                    style={{
-                      padding: "16px 20px",
-                      borderBottom: i === 0 ? "1px solid var(--border-light)" : "none",
-                    }}
-                  >
-                    <p style={{
-                      fontFamily: "'Hanken Grotesk', sans-serif",
-                      fontSize: 16.5, fontWeight: 500, color: "var(--ink)",
-                      lineHeight: 1.42, margin: "0 0 12px",
+            <>
+              {/* Top row: question counter */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 10 }}>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, letterSpacing: "0.1em", color: "var(--faint)" }}>
+                  Q {qIndex + 1} OF {QUESTIONS.length}
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div style={{ height: 2, background: "var(--border-light)", borderRadius: 99, overflow: "hidden", marginBottom: 16 }}>
+                <div style={{ height: "100%", width: progressWidth, background: "#a78bfa", borderRadius: 99, transition: "width .35s cubic-bezier(.4,0,.2,1)" }} />
+              </div>
+
+              {/* Category tag */}
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: 7, alignSelf: "flex-start",
+                background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.22)",
+                borderRadius: 20, padding: "5px 12px", marginBottom: 22,
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#a78bfa", display: "inline-block" }} />
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.1em", color: "#a78bfa" }}>
+                  {(dimLabels[q.dimension] ?? q.dimension).toUpperCase()} · {q.system.toUpperCase()}
+                </span>
+              </div>
+
+              {/* Question text */}
+              <h2 style={{
+                fontFamily: "Space Grotesk, 'Hanken Grotesk', sans-serif", fontWeight: 500,
+                fontSize: "clamp(18px, 4vw, 26px)", lineHeight: 1.3, letterSpacing: "-0.01em",
+                margin: "0 0 8px",
+              }}>
+                {q.prompt}
+              </h2>
+              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: 12, color: "var(--faint)", margin: "0 0 26px" }}>
+                Choose the statement that resonates more
+              </p>
+
+              {/* Two answer poles */}
+              {orderedOptions.map((opt, i) => {
+                const isPoleA = i === 0;
+                const tint = isPoleA
+                  ? { border: "rgba(167,139,250,0.22)", somewhat: "rgba(167,139,250,0.75)", somewhatBorder: "rgba(167,139,250,0.2)", strongly: "#a78bfa", stronglyBorder: "rgba(167,139,250,0.45)", hoverBg: "rgba(167,139,250,0.08)" }
+                  : { border: "rgba(99,179,133,0.22)", somewhat: "rgba(99,179,133,0.75)", somewhatBorder: "rgba(99,179,133,0.2)", strongly: "#63b385", stronglyBorder: "rgba(99,179,133,0.45)", hoverBg: "rgba(99,179,133,0.08)" };
+                return (
+                  <div key={opt.value}>
+                    <div style={{
+                      border: `0.5px solid ${tint.border}`, borderRadius: 10,
+                      padding: "16px 18px", marginBottom: 0,
                     }}>
-                      {opt.text}
-                    </p>
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-                      {([["1", "This fits me"], ["2", "This fits me strongly"]] as const).map(([strength, label]) => (
-                        <button
-                          key={strength}
-                          onClick={() => answerQuestion(`${opt.value}${strength}` as AnswerValue)}
-                          aria-label={`${label} — ${opt.text}`}
-                          style={{
-                            fontFamily: "'IBM Plex Mono', monospace",
-                            fontSize: 12.5, letterSpacing: "0.05em", color: "var(--muted)",
-                            background: "var(--bg)", border: "1px solid var(--border)",
-                            borderRadius: 8, padding: "9px 16px",
-                            cursor: "pointer", transition: "border-color .15s, color .15s",
-                          }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = ASTRO_COLOR; (e.currentTarget as HTMLElement).style.color = ASTRO_COLOR; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.color = "var(--muted)"; }}
-                        >
-                          {label}
-                        </button>
-                      ))}
+                      <p style={{
+                        fontFamily: "'Hanken Grotesk', sans-serif", fontSize: 15, fontWeight: 500,
+                        color: "var(--ink)", lineHeight: 1.42, margin: "0 0 2px",
+                      }}>
+                        {opt.text}
+                      </p>
+                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: 12, color: "var(--faint)", margin: "0 0 14px" }}>
+                        How strongly does this resonate?
+                      </p>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        {([["1", "Somewhat", tint.somewhat, tint.somewhatBorder], ["2", "Strongly", tint.strongly, tint.stronglyBorder]] as const).map(([strength, label, color, borderColor]) => (
+                          <button
+                            key={strength}
+                            onClick={() => answerQuestion(`${opt.value}${strength}` as AnswerValue)}
+                            aria-label={`${label} — ${opt.text}`}
+                            style={{
+                              fontFamily: "'IBM Plex Mono', monospace",
+                              fontSize: "clamp(12px, 2.8vw, 13px)", letterSpacing: "0.05em", color,
+                              background: "transparent", border: `1px solid ${borderColor}`,
+                              borderRadius: 8, padding: "9px 10px", minHeight: 44,
+                              cursor: "pointer", transition: "background .15s",
+                            }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = tint.hoverBg; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
+
+                    {isPoleA && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "16px 0" }}>
+                        <span style={{ flex: 1, height: 1, background: "#1e1e1e" }} />
+                        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.1em", color: "var(--faint)" }}>
+                          OR
+                        </span>
+                        <span style={{ flex: 1, height: 1, background: "#1e1e1e" }} />
+                      </div>
+                    )}
                   </div>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, letterSpacing: "0.1em", color: "var(--faint)" }}>
+                  QUESTION {qIndex + 1} / {QUESTIONS.length}
+                </span>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11.5, letterSpacing: "0.1em", color: "var(--faint)" }}>
+                  {dimLabels[q.dimension] ?? q.dimension} · {q.system.toUpperCase()}
+                </span>
+              </div>
+
+              <div style={{ height: 4, background: "var(--border-light)", borderRadius: 99, overflow: "hidden", marginBottom: 42 }}>
+                <div style={{ height: "100%", width: progressWidth, background: "var(--ink)", borderRadius: 99, transition: "width .35s cubic-bezier(.4,0,.2,1)" }} />
+              </div>
+
+              <h2 style={{
+                fontFamily: "Space Grotesk, 'Hanken Grotesk', sans-serif", fontWeight: 600, fontSize: "clamp(22px, 4vw, 30px)",
+                lineHeight: 1.22, letterSpacing: "-0.01em", margin: "0 0 34px", minHeight: 80,
+              }}>
+                {q.prompt}
+              </h2>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
+                {[q.a, q.b].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => answerQuestion(opt.value)}
+                    style={{
+                      textAlign: "left",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: 17, fontWeight: 500, color: "var(--ink)",
+                      background: "var(--surface)", border: "1px solid var(--border)",
+                      borderRadius: 14, padding: "20px 22px",
+                      cursor: "pointer", display: "flex", alignItems: "center", gap: 16,
+                      transition: "border-color .15s, transform .1s",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = ASTRO_COLOR; (e.currentTarget as HTMLElement).style.transform = "translateX(3px)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                  >
+                    <span style={{
+                      fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: "var(--faint)",
+                      border: "1px solid var(--border)", borderRadius: 7, width: 30, height: 30,
+                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                    }}>
+                      {opt.value}
+                    </span>
+                    {opt.text}
+                  </button>
                 ))}
               </div>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
-              {[q.a, q.b].map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => answerQuestion(opt.value)}
-                  style={{
-                    textAlign: "left",
-                    fontFamily: "'Hanken Grotesk', sans-serif",
-                    fontSize: 17, fontWeight: 500, color: "var(--ink)",
-                    background: "var(--surface)", border: "1px solid var(--border)",
-                    borderRadius: 14, padding: "20px 22px",
-                    cursor: "pointer", display: "flex", alignItems: "center", gap: 16,
-                    transition: "border-color .15s, transform .1s",
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = ASTRO_COLOR; (e.currentTarget as HTMLElement).style.transform = "translateX(3px)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
-                >
-                  <span style={{
-                    fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: "var(--faint)",
-                    border: "1px solid var(--border)", borderRadius: 7, width: 30, height: 30,
-                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                  }}>
-                    {opt.value}
-                  </span>
-                  {opt.text}
-                </button>
-              ))}
-            </div>
+            </>
           )}
 
           <button onClick={goBack} style={{ fontFamily: "Space Grotesk, 'Hanken Grotesk', sans-serif", fontSize: 14, color: "var(--faint)", background: "none", border: "none", cursor: "pointer", padding: "8px 0", marginTop: 30, alignSelf: "flex-start" }}>
