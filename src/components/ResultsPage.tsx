@@ -8,6 +8,50 @@ const MBTI_COLOR  = "#8B93E8";
 const ASTRO_COLOR = "#B98FE8";
 const NUM_COLOR   = "#E592AE";
 
+const ELEMENT_DESC: Record<string, string> = {
+  Fire:  "Driven by passion and creative force — you act, initiate, and inspire. Fire carries warmth that others orbit around.",
+  Earth: "Grounded in what is real and lasting — you build, endure, and stabilize. Earth carries a quiet, reliable power.",
+  Air:   "Energized by ideas, connection, and exchange — you adapt, communicate, and bridge perspectives with ease.",
+  Water: "Guided by feeling and intuition — you navigate by instinct and empathy. Water carries a profound emotional intelligence.",
+};
+
+const MODALITY_DESC: Record<string, string> = {
+  Cardinal: "You initiate. When there is a gap, you step in and get things moving — you are most alive at the start of something new.",
+  Fixed:    "You sustain. Your power is in depth and persistence — where others lose interest, you double down and see it through.",
+  Mutable:  "You adapt. Transitions and change are your natural element — you translate, evolve, and bring people with you.",
+};
+
+const EXPRESSION_DESC: Record<number, string> = {
+  1:  "Your outward presence reads as self-directed and pioneering — you project independence and originality.",
+  2:  "Your outward presence reads as cooperative and attuned — you project sensitivity and a gift for partnership.",
+  3:  "Your outward presence reads as expressive and magnetic — you project creativity and infectious enthusiasm.",
+  4:  "Your outward presence reads as methodical and dependable — you project structure and a steady, reliable nature.",
+  5:  "Your outward presence reads as dynamic and free-spirited — you project adaptability and an appetite for life.",
+  6:  "Your outward presence reads as nurturing and responsible — you project warmth and a strong sense of duty.",
+  7:  "Your outward presence reads as thoughtful and discerning — you project depth, precision, and quiet wisdom.",
+  8:  "Your outward presence reads as authoritative and capable — you project ambition, power, and executive presence.",
+  9:  "Your outward presence reads as generous and idealistic — you project compassion and a larger-than-self vision.",
+  11: "Your outward presence reads as visionary and sensitive — you project an unusual depth of perception and inspiration.",
+  22: "Your outward presence reads as exceptionally capable and visionary — you project the rare power to turn ambitious ideas into reality.",
+  33: "Your outward presence reads as deeply compassionate and teaching — you project an ability to heal and elevate those around you.",
+};
+
+const LUNAR_DESC = (score: number) =>
+  score >= 75 ? "Highly attuned to cycles and emotional currents — you feel the shifts before others name them. Tides, seasons, and collective energy move you." :
+  score >= 50 ? "Moderately lunar — you are responsive to emotional rhythms and external atmospheres without being overwhelmed by them." :
+  score >= 25 ? "Grounded and internally steady — you are influenced by the mood around you, but not defined by it." :
+  "Largely independent of emotional tides — you maintain your own frequency regardless of collective mood shifts.";
+
+const SOUL_DESC: Record<string, string> = {
+  Achievement: "Your inner engine runs on growth, mastery, and impact. You are most at peace when you are building something meaningful — most restless when your potential feels untapped.",
+  Connection:  "Your inner engine runs on love, belonging, and depth. You are most at peace when relationships are real and reciprocal — most restless when you feel unseen.",
+};
+
+const DESTINY_DESC: Record<string, string> = {
+  "Self-made": "You sense that your path is yours to design. You trust your own agency above fate or circumstance, and you take ownership of where you end up.",
+  "Called":    "You sense a thread running through your life — a pull toward something larger than any single decision. You are drawn by purpose as much as driven by will.",
+};
+
 function Pill({ color, label, value }: { color: string; label: string; value: string }) {
   return (
     <div style={{
@@ -227,20 +271,43 @@ export function ResultsPage({ result, name, onRestart }: Props) {
           <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 28, color: ASTRO_COLOR, margin: "0 0 2px" }}>
             {astrology.symbol} {astrology.sunSign}
           </h3>
-          <p style={{ fontSize: 12, color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.06em", margin: "0 0 4px" }}>
+          <p style={{ fontSize: 12, color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: "0.06em", margin: "0 0 6px" }}>
             {astrology.element} · {astrology.modality}
           </p>
-          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 22px", lineHeight: 1.5 }}>{astrology.description}</p>
-          <div style={{ marginBottom: 14 }}>
-            <p style={{ fontSize: 11, fontFamily: "'IBM Plex Mono', monospace", color: "var(--faint)", marginBottom: 6, letterSpacing: "0.06em" }}>LUNAR SENSITIVITY</p>
-            <div style={{ height: 6, background: "var(--border-light)", borderRadius: 99, overflow: "hidden" }}>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 18px", lineHeight: 1.5 }}>{astrology.description}</p>
+
+          {/* Element */}
+          <div style={{ borderLeft: `2px solid ${ASTRO_COLOR}44`, paddingLeft: 12, marginBottom: 10 }}>
+            <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, letterSpacing: "0.1em", color: ASTRO_COLOR, margin: "0 0 3px" }}>{astrology.element.toUpperCase()} ELEMENT</p>
+            <p style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>{ELEMENT_DESC[astrology.element] ?? ""}</p>
+          </div>
+
+          {/* Modality */}
+          <div style={{ borderLeft: `2px solid ${ASTRO_COLOR}44`, paddingLeft: 12, marginBottom: 18 }}>
+            <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, letterSpacing: "0.1em", color: ASTRO_COLOR, margin: "0 0 3px" }}>{astrology.modality.toUpperCase()} MODALITY</p>
+            <p style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>{MODALITY_DESC[astrology.modality] ?? ""}</p>
+          </div>
+
+          {/* Lunar sensitivity */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em", color: "var(--faint)", margin: 0 }}>LUNAR SENSITIVITY</p>
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: ASTRO_COLOR }}>{astrology.lunarScore}/100</span>
+            </div>
+            <div style={{ height: 6, background: "var(--border-light)", borderRadius: 99, overflow: "hidden", marginBottom: 6 }}>
               <div style={{ height: "100%", width: `${astrology.lunarScore}%`, background: ASTRO_COLOR, borderRadius: 99 }} />
             </div>
-            <p style={{ fontSize: 11, color: "var(--faint)", marginTop: 4 }}>{astrology.lunarScore}/100</p>
+            <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--faint)", margin: 0 }}>{LUNAR_DESC(astrology.lunarScore)}</p>
           </div>
-          <p style={{ fontSize: 12, color: "var(--faint)", marginBottom: 12 }}>
-            Elemental lean: <strong style={{ color: "var(--muted)" }}>{astrology.elementFromAnswers}</strong>
+
+          {/* Elemental lean from answers */}
+          <p style={{ fontSize: 12, color: "var(--faint)", marginBottom: 14 }}>
+            Answer pattern leans <strong style={{ color: "var(--muted)" }}>{astrology.elementFromAnswers}</strong>
+            {astrology.elementFromAnswers.includes(astrology.element)
+              ? " — aligned with your birth sign."
+              : " — a different signature from your natal element, suggesting a complex blend."}
           </p>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {astrology.traits.map(t => (
               <span key={t} style={{ fontSize: 12, padding: "4px 10px", background: ASTRO_COLOR + "14", color: ASTRO_COLOR, borderRadius: 6 }}>{t}</span>
@@ -257,21 +324,41 @@ export function ResultsPage({ result, name, onRestart }: Props) {
           <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "var(--faint)", letterSpacing: "0.06em", margin: "0 0 4px" }}>
             LIFE PATH · {numerology.lifePathTheme}
           </p>
-          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 16px", lineHeight: 1.5 }}>{numerology.lifePathDesc}</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>EXPRESSION NO.</span>
-              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.expressionNumber}</span>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 18px", lineHeight: 1.5 }}>{numerology.lifePathDesc}</p>
+
+          {/* Expression number */}
+          <div style={{ borderLeft: `2px solid ${NUM_COLOR}44`, paddingLeft: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, letterSpacing: "0.1em", color: NUM_COLOR, margin: 0 }}>EXPRESSION NO.</p>
+              <span style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 700, fontSize: 16, color: "var(--ink)" }}>{numerology.expressionNumber}</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>SOUL URGE</span>
-              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.soulUrge}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "var(--faint)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.06em" }}>DESTINY LEAN</span>
-              <span style={{ fontWeight: 600, color: "var(--ink)" }}>{numerology.destinyLean}</span>
-            </div>
+            <p style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>
+              {EXPRESSION_DESC[numerology.expressionNumber] ?? "How the world perceives your outward energy and natural gifts."}
+            </p>
           </div>
+
+          {/* Soul urge */}
+          <div style={{ borderLeft: `2px solid ${NUM_COLOR}44`, paddingLeft: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, letterSpacing: "0.1em", color: NUM_COLOR, margin: 0 }}>SOUL URGE</p>
+              <span style={{ fontWeight: 600, color: "var(--ink)", fontSize: 13 }}>{numerology.soulUrge}</span>
+            </div>
+            <p style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>
+              {SOUL_DESC[numerology.soulUrge] ?? ""}
+            </p>
+          </div>
+
+          {/* Destiny lean */}
+          <div style={{ borderLeft: `2px solid ${NUM_COLOR}44`, paddingLeft: 12, marginBottom: 18 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, letterSpacing: "0.1em", color: NUM_COLOR, margin: 0 }}>DESTINY LEAN</p>
+              <span style={{ fontWeight: 600, color: "var(--ink)", fontSize: 13 }}>{numerology.destinyLean}</span>
+            </div>
+            <p style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>
+              {DESTINY_DESC[numerology.destinyLean] ?? ""}
+            </p>
+          </div>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {numerology.traits.map(t => (
               <span key={t} style={{ fontSize: 12, padding: "4px 10px", background: NUM_COLOR + "14", color: NUM_COLOR, borderRadius: 6 }}>{t}</span>

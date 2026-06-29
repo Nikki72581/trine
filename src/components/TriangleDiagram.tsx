@@ -1,18 +1,9 @@
 "use client";
-import type { TrineResult, Convergence } from "@/lib/compute";
+import type { TrineResult } from "@/lib/compute";
 
 const MBTI_COLOR  = "#8B93E8";
 const ASTRO_COLOR = "#B98FE8";
 const NUM_COLOR   = "#E592AE";
-const OVERLAP_COLOR = "var(--muted)";
-
-function nodeColor(systems: Convergence["systems"]): string {
-  if (systems.includes("mbti") && systems.includes("astro") && systems.includes("num")) return OVERLAP_COLOR;
-  if (systems.includes("mbti") && systems.includes("astro")) return "#A291E8";
-  if (systems.includes("mbti") && systems.includes("num")) return "#B893CB";
-  if (systems.includes("astro") && systems.includes("num")) return "#CF91CB";
-  return OVERLAP_COLOR;
-}
 
 // Triangle vertices
 const TOP   = { x: 260, y: 30  };
@@ -25,33 +16,20 @@ const CENTER = {
   y: (TOP.y + LEFT.y + RIGHT.y) / 3,
 };
 
-// Midpoints of edges
-function midpoint(a: {x:number;y:number}, b: {x:number;y:number}) {
-  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-}
-
-// Map convergence to position
-function convergencePos(c: Convergence, index: number) {
-  const { systems } = c;
-  const all3 = systems.includes("mbti") && systems.includes("astro") && systems.includes("num");
-  if (all3) return CENTER;
-  const hasMbti  = systems.includes("mbti");
-  const hasAstro = systems.includes("astro");
-  const hasNum   = systems.includes("num");
-  if (hasMbti && hasAstro) return midpoint(TOP, RIGHT);
-  if (hasMbti && hasNum)   return midpoint(TOP, LEFT);
-  if (hasAstro && hasNum)  return midpoint(LEFT, RIGHT);
-  // Single system – orbit center
-  const angle = (index / 3) * Math.PI * 2;
-  return { x: CENTER.x + Math.cos(angle) * 50, y: CENTER.y + Math.sin(angle) * 50 };
-}
-
 interface Props {
   result: TrineResult;
 }
 
 export function TriangleDiagram({ result }: Props) {
-  const { mbti, astrology, numerology, convergences } = result;
+  const { mbti, astrology, numerology, archetype } = result;
+
+  // Split "The Radiant Explorer" → prefix="The", line1="Radiant", line2="Explorer"
+  const words = archetype.split(" ");
+  const prefix = words[0];
+  const nameWords = words.slice(1);
+  const mid = Math.ceil(nameWords.length / 2);
+  const nameLine1 = nameWords.slice(0, mid).join(" ");
+  const nameLine2 = nameWords.slice(mid).join(" ");
 
   const points = `${TOP.x},${TOP.y} ${LEFT.x},${LEFT.y} ${RIGHT.x},${RIGHT.y}`;
 
@@ -62,7 +40,6 @@ export function TriangleDiagram({ result }: Props) {
         style={{ width: "100%", height: "auto", overflow: "visible" }}
         aria-label="Trine convergence diagram"
       >
-        {/* Glow defs */}
         <defs>
           <filter id="glow-mbti">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -80,6 +57,14 @@ export function TriangleDiagram({ result }: Props) {
             <stop offset="0%" stopColor={ASTRO_COLOR} stopOpacity="0.18" />
             <stop offset="100%" stopColor={ASTRO_COLOR} stopOpacity="0" />
           </radialGradient>
+          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor={ASTRO_COLOR} stopOpacity="0.40" />
+            <stop offset="50%"  stopColor={MBTI_COLOR}  stopOpacity="0.14" />
+            <stop offset="100%" stopColor={NUM_COLOR}   stopOpacity="0" />
+          </radialGradient>
+          <filter id="softBlur">
+            <feGaussianBlur stdDeviation="10" />
+          </filter>
         </defs>
 
         {/* Triangle fill */}
@@ -90,7 +75,7 @@ export function TriangleDiagram({ result }: Props) {
           strokeWidth="1.5"
         />
 
-        {/* Medians — subtle lines to centroid */}
+        {/* Medians — dashed lines to centroid */}
         {[TOP, LEFT, RIGHT].map((v, i) => (
           <line
             key={i}
@@ -102,59 +87,79 @@ export function TriangleDiagram({ result }: Props) {
           />
         ))}
 
-        {/* Convergence nodes */}
-        {convergences.map((c, i) => {
-          const pos = convergencePos(c, i);
-          const col = nodeColor(c.systems);
-          return (
-            <g key={c.title}>
-              {/* Outer ring */}
-              <circle cx={pos.x} cy={pos.y} r={22} fill={col} fillOpacity={0.12} />
-              {/* Inner dot */}
-              <circle cx={pos.x} cy={pos.y} r={8} fill={col} />
-              {/* Pulse ring */}
-              <circle cx={pos.x} cy={pos.y} r={14} fill="none" stroke={col} strokeWidth="1.5" strokeOpacity={0.5} />
-              {/* Label */}
-              <text
-                x={pos.x}
-                y={pos.y + 32}
-                textAnchor="middle"
-                fontSize={10}
-                fontFamily="'IBM Plex Mono', monospace"
-                fill={OVERLAP_COLOR}
-                letterSpacing="0.06em"
-              >
-                {c.title.toUpperCase().slice(0, 20)}
-              </text>
-            </g>
-          );
-        })}
+        {/* ── Center: Archetype ────────────────────────────── */}
+        {/* Soft outer glow */}
+        <circle cx={CENTER.x} cy={CENTER.y} r={80} fill="url(#centerGlow)" filter="url(#softBlur)" />
+        {/* Ring */}
+        <circle cx={CENTER.x} cy={CENTER.y} r={46} fill={ASTRO_COLOR} fillOpacity={0.06} />
+        <circle cx={CENTER.x} cy={CENTER.y} r={46} fill="none" stroke={ASTRO_COLOR} strokeWidth="0.75" strokeOpacity={0.35} />
+        {/* Inner ring */}
+        <circle cx={CENTER.x} cy={CENTER.y} r={4} fill={ASTRO_COLOR} fillOpacity={0.7} />
 
-        {/* MBTI vertex — top */}
+        {/* "THE" prefix */}
+        <text
+          x={CENTER.x} y={CENTER.y - 26}
+          textAnchor="middle"
+          fontSize={8}
+          fontFamily="'IBM Plex Mono', monospace"
+          letterSpacing="0.18em"
+          fill={ASTRO_COLOR}
+          fillOpacity={0.75}
+        >
+          {prefix.toUpperCase()}
+        </text>
+        {/* Archetype name line 1 */}
+        <text
+          x={CENTER.x} y={CENTER.y - 8}
+          textAnchor="middle"
+          fontSize={13}
+          fontFamily="Space Grotesk, var(--font-hanken), sans-serif"
+          fontWeight={600}
+          fill="var(--ink)"
+          letterSpacing="0.04em"
+        >
+          {nameLine1.toUpperCase()}
+        </text>
+        {/* Archetype name line 2 */}
+        {nameLine2 && (
+          <text
+            x={CENTER.x} y={CENTER.y + 12}
+            textAnchor="middle"
+            fontSize={13}
+            fontFamily="Space Grotesk, var(--font-hanken), sans-serif"
+            fontWeight={600}
+            fill="var(--ink)"
+            letterSpacing="0.04em"
+          >
+            {nameLine2.toUpperCase()}
+          </text>
+        )}
+
+        {/* ── MBTI vertex — top ───────────────────────────── */}
         <g filter="url(#glow-mbti)">
           <circle cx={TOP.x} cy={TOP.y} r={28} fill={MBTI_COLOR} fillOpacity={0.12} />
           <circle cx={TOP.x} cy={TOP.y} r={14} fill={MBTI_COLOR} />
         </g>
         <text x={TOP.x} y={TOP.y - 22} textAnchor="middle" fontSize={18} fontFamily="Space Grotesk, var(--font-hanken), sans-serif" fontWeight={600} fill={MBTI_COLOR}>{mbti.type}</text>
-        <text x={TOP.x} y={TOP.y - 6} textAnchor="middle" fontSize={9} fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">MYERS–BRIGGS</text>
+        <text x={TOP.x} y={TOP.y - 6}  textAnchor="middle" fontSize={9}  fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">MYERS–BRIGGS</text>
 
-        {/* Astrology vertex — right */}
+        {/* ── Astrology vertex — right ─────────────────────── */}
         <g filter="url(#glow-astro)">
           <circle cx={RIGHT.x} cy={RIGHT.y} r={28} fill={ASTRO_COLOR} fillOpacity={0.12} />
           <circle cx={RIGHT.x} cy={RIGHT.y} r={14} fill={ASTRO_COLOR} />
         </g>
-        <text x={RIGHT.x + 20} y={RIGHT.y - 12} textAnchor="start" fontSize={20} fontFamily="serif" fill={ASTRO_COLOR}>{astrology.symbol}</text>
-        <text x={RIGHT.x + 20} y={RIGHT.y + 6} textAnchor="start" fontSize={14} fontFamily="Space Grotesk, var(--font-hanken), sans-serif" fontWeight={600} fill={ASTRO_COLOR}>{astrology.sunSign}</text>
-        <text x={RIGHT.x + 20} y={RIGHT.y + 20} textAnchor="start" fontSize={9} fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">SUN SIGN</text>
+        <text x={RIGHT.x + 20} y={RIGHT.y - 12} textAnchor="start" fontSize={20} fontFamily="serif"                                                       fill={ASTRO_COLOR}>{astrology.symbol}</text>
+        <text x={RIGHT.x + 20} y={RIGHT.y + 6}  textAnchor="start" fontSize={14} fontFamily="Space Grotesk, var(--font-hanken), sans-serif" fontWeight={600} fill={ASTRO_COLOR}>{astrology.sunSign}</text>
+        <text x={RIGHT.x + 20} y={RIGHT.y + 20} textAnchor="start" fontSize={9}  fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">SUN SIGN</text>
 
-        {/* Numerology vertex — left */}
+        {/* ── Numerology vertex — left ─────────────────────── */}
         <g filter="url(#glow-num)">
           <circle cx={LEFT.x} cy={LEFT.y} r={28} fill={NUM_COLOR} fillOpacity={0.12} />
           <circle cx={LEFT.x} cy={LEFT.y} r={14} fill={NUM_COLOR} />
         </g>
         <text x={LEFT.x - 20} y={LEFT.y - 12} textAnchor="end" fontSize={22} fontFamily="Space Grotesk, var(--font-hanken), sans-serif" fontWeight={700} fill={NUM_COLOR}>{numerology.lifePath}</text>
-        <text x={LEFT.x - 20} y={LEFT.y + 6} textAnchor="end" fontSize={9} fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">LIFE PATH</text>
-        <text x={LEFT.x - 20} y={LEFT.y + 20} textAnchor="end" fontSize={9} fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">NUMEROLOGY</text>
+        <text x={LEFT.x - 20} y={LEFT.y + 6}  textAnchor="end" fontSize={9}  fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">LIFE PATH</text>
+        <text x={LEFT.x - 20} y={LEFT.y + 20} textAnchor="end" fontSize={9}  fontFamily="'IBM Plex Mono', monospace" fill="var(--faint)" letterSpacing="0.1em">NUMEROLOGY</text>
       </svg>
     </div>
   );
