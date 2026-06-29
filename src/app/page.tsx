@@ -306,7 +306,7 @@ export default function Home() {
                   color: ASTRO_COLOR, background: ASTRO_COLOR + "1A", border: `1px solid ${ASTRO_COLOR}40`,
                   borderRadius: 10, padding: "11px 14px", margin: "0 0 16px", lineHeight: 1.55,
                 }}>
-                  Read both statements below, then choose how strongly the one closer to you fits — there&apos;s no neutral middle, so go with your gut.
+                  Two statements, two sides of a spectrum. Read both, then click how strongly you lean toward one of them — the button sits under the statement it rates.
                 </p>
               )}
               <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
@@ -326,7 +326,7 @@ export default function Home() {
                       {opt.text}
                     </p>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-                      {([["1", "Somewhat"], ["2", "Strongly"]] as const).map(([strength, label]) => (
+                      {([["1", "This fits me"], ["2", "This fits me strongly"]] as const).map(([strength, label]) => (
                         <button
                           key={strength}
                           onClick={() => answerQuestion(`${opt.value}${strength}` as AnswerValue)}
