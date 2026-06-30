@@ -174,6 +174,7 @@ export function computeAstrology(answers: Answers, month: number, day: number): 
 export interface NumerologyResult {
   lifePath: number;
   expressionNumber: number;
+  expressionStyle: string; // "Leadership/Visibility" | "Collaborative/Support"
   soulUrge: string;  // "Achievement" | "Connection"
   destinyLean: string; // "Self-made" | "Called"
   lifePathTheme: string;
@@ -218,6 +219,15 @@ export function computeNumerology(answers: Answers, name: string, month: number,
   const exprRaw = clean.split("").reduce((s, c) => s + (PYTHAGOREAN[c] ?? 0), 0);
   const expressionNumber = reduceToSingleDigit(exprRaw);
 
+  // Expression style from answers (direction 1 = Leadership/Visibility)
+  const exprStyleQs = QUESTIONS.filter(q => q.dimension === "expression");
+  let exprStyleScore = 0;
+  for (const q of exprStyleQs) {
+    const r = answers[q.id] ?? 3;
+    exprStyleScore += q.direction * (r - 3);
+  }
+  const expressionStyle = exprStyleScore >= 0 ? "Leadership/Visibility" : "Collaborative/Support";
+
   // Soul urge from answers (direction 1 = Achievement)
   const soulQs = QUESTIONS.filter(q => q.dimension === "soul");
   let soulScore = 0;
@@ -241,6 +251,7 @@ export function computeNumerology(answers: Answers, name: string, month: number,
   return {
     lifePath,
     expressionNumber,
+    expressionStyle,
     soulUrge,
     destinyLean,
     lifePathTheme: lpMeta.theme,

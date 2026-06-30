@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_DATABASE_URL")
+}
+
+// A saved Trine reading linked to a Clerk user.
+// We store only computed results — no raw answers, no name, no birthdate.
+model Reading {
+  id        String   @id @default(cuid())
+  userId    String   // Clerk user ID (not a FK — Clerk manages auth externally)
+  createdAt DateTime @default(now())
+
+  // Denormalised for quick list display
+  archetype String
+  mbtiType  String
+  sunSign   String
+  lifePath  Int
+
+  // Full TrineResult JSON — lets the history page reconstruct all detail
+  result    Json
+
+  @@index([userId, createdAt(sort: Desc)])
+}

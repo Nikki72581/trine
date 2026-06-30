@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import type { TrineResult } from "@/lib/compute";
 import { clarityLabel } from "@/lib/compute";
 import { TriangleDiagram } from "./TriangleDiagram";
+import { SaveReadingButton } from "./SaveReadingButton";
 
 const MBTI_COLOR  = "#8B93E8";
 const ASTRO_COLOR = "#B98FE8";
@@ -165,7 +166,7 @@ export function ResultsPage({ result, name, onRestart }: Props) {
               <path d="M8.5 12 11 14.5 16 9" stroke="#63b385" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
             <p style={{ fontSize: 13.5, lineHeight: 1.55, color: "var(--muted)", margin: 0 }}>
-              We don&apos;t collect or store any of your data. This reading lives only in your browser — once you close or refresh this tab, it&apos;s gone for good. Export a copy below if you want to keep it.
+              Nothing is stored by default — this reading lives only in your browser. Export a PDF to keep a copy, or save it to a free profile to build a reading history over time. We never store your name, birthdate, or quiz answers.
             </p>
           </div>
           <button
@@ -428,7 +429,32 @@ export function ResultsPage({ result, name, onRestart }: Props) {
       </section>
 
       {/* ── FOOTER ACTIONS ───────────────────────────────────── */}
-      <div className="no-print" style={{ textAlign: "center", paddingTop: 8 }}>
+      <div className="no-print" style={{ paddingTop: 8 }}>
+        {/* Save to profile */}
+        <div style={{
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: 16,
+          padding: "28px 28px",
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 20,
+        }}>
+          <div>
+            <h3 style={{ fontFamily: "Space Grotesk, var(--font-hanken), sans-serif", fontWeight: 600, fontSize: 18, margin: "0 0 6px" }}>
+              Save this reading
+            </h3>
+            <p style={{ fontSize: 14, color: "var(--muted)", margin: 0, lineHeight: 1.55 }}>
+              Build a personal archive and track how your profile shifts over time.
+            </p>
+          </div>
+          <SaveReadingButton result={result} />
+        </div>
+
+        {/* Secondary actions */}
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 14 }}>
           <button
             onClick={() => window.print()}
@@ -462,8 +488,8 @@ export function ResultsPage({ result, name, onRestart }: Props) {
             ✦ Start a new reading
           </button>
         </div>
-        <p style={{ fontSize: 11.5, color: "var(--faint)", margin: 0 }}>
-          Nothing on this page is saved anywhere — leaving or refreshing clears it for good.
+        <p style={{ fontSize: 11.5, color: "var(--faint)", margin: 0, textAlign: "center" }}>
+          Leaving or refreshing clears this reading — export or save to keep it.
         </p>
       </div>
     </div>

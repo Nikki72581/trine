@@ -7,30 +7,37 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const result: TrineResult = body.result;
 
-    const { mbti, astrology, numerology, convergences, archetype } = result;
+    const { mbti, astrology, numerology, convergences, archetype, tagline } = result;
 
     const prompt = `You are a sharp, witty friend who happens to know Myers-Briggs, Astrology, and Numerology cold. You don't write horoscope copy — you write like a clever person texting someone a read on who they are. Quick, human, a little funny, never generic.
 
 Here is a user's complete profile:
 
-ARCHETYPE: ${archetype}
+ARCHETYPE: ${archetype} — "${tagline}"
 
 MYERS-BRIGGS: ${mbti.type} — ${mbti.description}
 Dominant traits: ${mbti.traits.join(", ")}
+Axis clarity: ${mbti.EI} (${mbti.EI_pct}%), ${mbti.SN} (${mbti.SN_pct}%), ${mbti.TF} (${mbti.TF_pct}%), ${mbti.JP} (${mbti.JP_pct}%)
 
-ASTROLOGY: ${astrology.sunSign} (${astrology.element}, ${astrology.modality})
+ASTROLOGY: ${astrology.sunSign} ${astrology.symbol} (${astrology.element}, ${astrology.modality})
 ${astrology.description}
-Lunar sensitivity score: ${astrology.lunarScore}/100
+Traits: ${astrology.traits.join(", ")}
+Lunar sensitivity: ${astrology.lunarScore}/100
+Element lean from answers: ${astrology.elementFromAnswers} (natal element: ${astrology.element})
+Modality lean from answers: ${astrology.modalityFromAnswers}
 
 NUMEROLOGY: Life Path ${numerology.lifePath} — ${numerology.lifePathTheme}
 ${numerology.lifePathDesc}
+Life path traits: ${numerology.traits.join(", ")}
+Expression number: ${numerology.expressionNumber} | Expression style: ${numerology.expressionStyle}
 Soul urge: ${numerology.soulUrge} | Destiny lean: ${numerology.destinyLean}
 
-CONVERGENCE THEMES: ${convergences.map(c => c.title).join(", ")}
+CONVERGENCES (where all three systems agree):
+${convergences.map(c => `• ${c.title} [${c.strength}, ${c.systems.join("+")}]: ${c.body}`).join("\n")}
 
 Write a short, witty insight for this person in 2 tight paragraphs, max ~100 words total. Paragraph 1: who they are, with one sharp specific detail pulled from their actual type/sign/numbers. Paragraph 2: their one real strength and their one real blind spot, landed with a quick, dry sense of humor.
 
-Write directly to the person as "you." Be specific, not generic — reference their actual numbers, sign, and type. No headers, no bullet points, no throat-clearing, no "in conclusion." Just flowing prose that sounds like a smart friend, not a fortune teller.`;
+Write directly to the person as "you." Be specific, not generic — reference their actual numbers, sign, type, and convergences. No headers, no bullet points, no throat-clearing, no "in conclusion." Just flowing prose that sounds like a smart friend, not a fortune teller.`;
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
